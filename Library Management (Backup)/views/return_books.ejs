@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Return Books</title>
+  <link rel="stylesheet" href="/css/return.css">
+ 
+</head>
+<body>
+  <%- include('partials/navbar', { role: role }) %>
+
+  
+  <h2>Return Book</h2>
+
+  <form action="/returns/return" method="POST">
+    <label>Select Issued Book:</label>
+    <select name="issue_id" required>
+      <option value="">--Select--</option>
+      <% pendingIssues.forEach(issue => { %>
+        <option value="<%= issue.issue_id %>">
+          <%= issue.title %> - <%= issue.name %> (Due: <%= issue.due_date.toISOString().split('T')[0] %>)
+        </option>
+      <% }) %>
+    </select>
+
+    <label>Return Date:</label>
+    <input type="date" name="return_date" required />
+    <button type="submit">Mark as Returned</button>
+  </form>
+
+  <h3>Returned Books</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Return ID</th>
+        <th>Book</th>
+        <th>Member</th>
+        <th>Issue Date</th>
+        <th>Due Date</th>
+        <th>Return Date</th>
+        <th>Fine (₹)</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% returnedBooks.forEach(rb => { %>
+        <tr>
+          <td><%= rb.return_id %></td>
+          <td><%= rb.book_title %></td>
+          <td><%= rb.member_name %></td>
+          <td><%= rb.issue_date.toISOString().split('T')[0] %></td>
+          <td><%= rb.due_date.toISOString().split('T')[0] %></td>
+          <td><%= rb.return_date.toISOString().split('T')[0] %></td>
+          <td><%= rb.fine_amount %></td>
+          <td><%= rb.status %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <script>
+    window.addEventListener("storage", function (event) {
+        if (event.key === "logout") {
+          window.location.href = "/";
+        }
+      });
+  </script>
+</body>
+</html>

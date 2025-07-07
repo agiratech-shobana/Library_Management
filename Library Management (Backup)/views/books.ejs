@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <title>Manage Books</title><link rel="stylesheet" href="/css/books.css">
+  
+  
+</head>
+<body>
+  <%- include('partials/navbar', { role: role }) %>
+
+  
+
+  <h2> Manage Books</h2>
+
+  <!-- Add Book Button -->
+  <button class="btn btn-primary" onclick="openAddModal()">+ Add Book</button>
+
+  <!-- Book Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Title</th><th>Author</th><th>ISBN</th><th>Publisher</th><th>Total</th><th>Available</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% books.forEach(book => { %>
+        <tr>
+          <td><%= book.book_id %></td>
+          <td><%= book.title %></td>
+          <td><%= book.author %></td>
+          <td><%= book.isbn %></td>
+          <td><%= book.publisher %></td>
+          <td><%= book.total_copies %></td>
+          <td><%= book.available_copies %></td>
+          <td>
+            <button class="btn btn-warning" onclick='openEditModal(<%- JSON.stringify(book) %>)'>Edit</button>
+            <form action="/books/delete/<%= book.book_id %>" method="POST" style="display:inline;">
+              <button class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <!-- Add Book Modal -->
+  <div class="modal" id="addModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeAddModal()">X</span>
+      <h3>Add New Book</h3>
+      <form action="/books/add" method="POST">
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="author" placeholder="Author" required>
+        <input type="text" name="isbn" placeholder="ISBN" required>
+        <input type="text" name="publisher" placeholder="Publisher" required>
+        <input type="number" name="total_copies" placeholder="Total Copies" required>
+        <input type="number" name="available_copies" placeholder="Available Copies" required>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn" onclick="closeAddModal()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Book Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeEditModal()">x</span>
+      <h3>Edit Book</h3>
+      <form id="editForm" method="POST">
+        <input type="text" name="title" id="editTitle" required>
+        <input type="text" name="author" id="editAuthor" required>
+        <input type="text" name="isbn" id="editISBN" required>
+        <input type="text" name="publisher" id="editPublisher" required>
+        <input type="number" name="total_copies" id="editTotal" required>
+        <input type="number" name="available_copies" id="editAvailable" required>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    console.log(`<%=role%>`);
+    function openAddModal() {
+      document.getElementById('addModal').classList.add('show');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('show');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('show');
+    }
+
+    function openEditModal(book) {
+      document.getElementById('editTitle').value = book.title;
+      document.getElementById('editAuthor').value = book.author;
+      document.getElementById('editISBN').value = book.isbn;
+      document.getElementById('editPublisher').value = book.publisher;
+      document.getElementById('editTotal').value = book.total_copies;
+      document.getElementById('editAvailable').value = book.available_copies;
+
+      const form = document.getElementById('editForm');
+      form.action = `/books/edit/${book.book_id}`;
+
+      document.getElementById('editModal').classList.add('show');
+    }
+    window.addEventListener("storage", function (event) {
+        if (event.key === "logout") {
+          window.location.href = "/";
+        }
+      });
+      
+window.addEventListener("load", function() {
+  console.log("Page fully loaded!");
+  var url = '/'+`<%=role%>`+'/dashboard';
+  document.getElementById('member_a').href = url;
+});
+  </script>
+</body>
+</html>

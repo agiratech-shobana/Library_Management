@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- BOXICONS -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/login.css" />
+    <title>Library Login</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="form-header">
+        <div class="titles">
+          <div class="title-login">Login</div>
+        </div>
+      </div>
+      <!-- LOGIN FORM -->
+      <form action="/login" class="login-form" method="POST" autocomplete="off">
+        <div class="input-box">
+          <input
+            type="email"
+            class="input-field"
+            id="log-email"
+            name="email"
+            required
+          />
+          <label for="log-email" class="label">Email</label>
+          <i class="bx bx-envelope icon"></i>
+        </div>
+        <div class="input-box">
+          <input
+            type="password"
+            class="input-field"
+            id="log-pass"
+            name="password"
+            required
+          />
+          <label for="log-pass" class="label">Password</label>
+          <i class="bx bx-lock-alt icon" id="pass-icon"></i>
+        </div>
+        <div class="form-cols">
+          <div class="col-1"></div>
+          <div class="col-2">
+            <a href="#">Forgot password?</a>
+          </div>
+        </div>
+        <div class="input-box">
+          <button class="btn-submit" id="SignInBtn">
+            Sign In <i class="bx bx-log-in"></i>
+          </button>
+        </div>
+        <p style="text-align: center; color: red">
+          <%= typeof error !== "undefined" ? error : "" %>
+        </p>
+      </form>
+    </div>
+
+    <script>
+      localStorage.removeItem("logout");
+      const passInput = document.getElementById("log-pass");
+      const passIcon = document.getElementById("pass-icon");
+
+      passInput.addEventListener("input", function () {
+        // Hide icon if there is at least one character
+        if (passInput.value.length > 0) {
+          passIcon.style.visibility = "hidden";
+        } else {
+          passIcon.style.visibility = "visible";
+        }
+      });
+
+      passInput.addEventListener("blur", function () {
+        // Show icon when unfocused
+        passIcon.style.visibility = "visible";
+      });
+
+      passInput.addEventListener("focus", function () {
+        // Hide icon if there is text
+        if (passInput.value.length > 0) {
+          passIcon.style.visibility = "hidden";
+        }
+      });
+    </script>
+  </body>
+</html>

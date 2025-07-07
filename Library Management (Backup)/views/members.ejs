@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Members</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .btn {
+      padding: 6px 12px;
+      margin: 2px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-warning {
+      background-color: #ffc107;
+      color: black;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.show {
+      display: flex;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      width: 400px;
+      border-radius: 8px;
+      position: relative;
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px; right: 15px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar', { role: role }) %>
+
+  <h2> Manage Members</h2>
+
+  <% if (role === 'admin') { %> <!-- MODIFIED: Only show to admin -->
+    <!-- <a href="/members/add" class="btn btn-primary mb-3">Add Member</a> -->
+    <button class="btn btn-primary" onclick="openAddModal()"> Add Member</button>
+  <% } %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Membership ID</th><th>Status</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% members.forEach(member => { %>
+        <tr>
+          <td><%= member.id %></td>
+          <td><%= member.name %></td>
+          <td><%= member.email %></td>
+          <td><%= member.phone %></td>
+          <td><%= member.membership_id %></td>
+          <td><%= member.status %></td>
+          <td>
+            <% if (role === 'admin') { %> <!-- MODIFIED: Only admin can edit/delete -->
+              <button class="btn btn-warning" onclick='openEditModal(<%- JSON.stringify(member) %>)'>Edit</button>
+              <form action="/members/delete/<%= member.id %>" method="POST" style="display:inline;">
+                <button class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+              </form>
+            <% } else { %>
+              <span class="text-muted">View Only</span>
+            <% } %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <% if (role === 'admin') { %> <!-- MODIFIED: Show modal only to admin -->
+    <!-- Add Modal -->
+    <div class="modal" id="addModal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeAddModal()">✖</span>
+        <h3>Add Member</h3>
+        <form action="/members/add" method="POST">
+          <input type="text" name="name" placeholder="Name" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="text" name="phone" placeholder="Phone" required>
+          <input type="text" name="membership_id" placeholder="Membership ID (e.g. MEM123)" required>
+          <input type="text" name="status" placeholder="Status (Active/Inactive)" required>
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn" onclick="closeAddModal()">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeEditModal()">✖</span>
+        <h3>Edit Member</h3>
+        <form id="editForm" method="POST">
+          <input type="text" name="name" id="editName" required>
+          <input type="email" name="email" id="editEmail" required>
+          <input type="text" name="phone" id="editPhone" required>
+          <input type="text" name="membership_id" id="editMembershipId" required>
+          <input type="text" name="status" id="editStatus" required>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+  <% } %>
+
+  <script>
+    function openAddModal() {
+      document.getElementById('addModal').classList.add('show');
+    }
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('show');
+    }
+
+    function openEditModal(member) {
+      document.getElementById('editName').value = member.name;
+      document.getElementById('editEmail').value = member.email;
+      document.getElementById('editPhone').value = member.phone;
+      document.getElementById('editMembershipId').value = member.membership_id;
+      document.getElementById('editStatus').value = member.status;
+
+      const form = document.getElementById('editForm');
+      form.action = `/members/edit/${member.id}`;
+      document.getElementById('editModal').classList.add('show');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('show');
+    }
+
+    window.addEventListener("storage", function (event) {
+      if (event.key === "logout") {
+        window.location.href = "/";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!-- /views/partials/navbar.ejs -->
+
+<nav style="background-color: #343a40; padding: 10px;">
+  <ul style="list-style: none; display: flex; gap: 20px; color: white; margin: 0;">
+    <% if (role === 'admin') { %>
+      <li><a href="/admin/dashboard" style="color: white; text-decoration: none;">Dashboard</a></li>
+    <% } else if (role === 'librarian') { %>
+      <li><a href="/librarian/dashboard" style="color: white; text-decoration: none;">Dashboard</a></li>
+    <% } %>
+
+    <li><a href="/books" style="color: white; text-decoration: none;">Books</a></li>
+    <li><a href="/members" style="color: white; text-decoration: none;">Members</a></li>
+    <li><a href="/issue" style="color: white; text-decoration: none;">Issued Books</a></li>
+    <li><a href="/returns" style="color: white; text-decoration: none;">Returns</a></li>
+    <li><a href="/reports" style="color: white; text-decoration: none;">Reports</a></li>
+    <li><a href="/logout" style="color: white; text-decoration: none;">Logout</a></li>
+  </ul>
+</nav>
+

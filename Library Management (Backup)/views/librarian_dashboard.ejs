@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Librarian Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav {
+        background-color: #343a40;
+        padding: 10px;
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+      }
+
+      nav ul li {
+        margin-right: 20px;
+      }
+
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+      }
+
+      nav ul li a[href="/logout"] {
+        color: red;
+      }
+
+      h2, h3 {
+        margin-left: 20px;
+        color: #333;
+      }
+
+      .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px;
+      }
+
+      .card {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 15px 20px;
+        width: 200px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .card.low-stock {
+        border-color: red;
+        color: red;
+        font-weight: bold;
+      }
+
+      a.logout {
+        margin-left: 20px;
+        color: red;
+        text-decoration: none;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav>
+      <ul>
+        <li><a href="/librarian/dashboard">Dashboard</a></li>
+        <li><a href="/books">Books</a></li>
+        <li><a href="/issue">Issued Books</a></li>
+        <li><a href="/members">Members</a></li>
+        <li><a href="/returns">Return</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </nav>
+
+    <!-- Welcome Section -->
+    <h2>Welcome, <%= username %>!</h2>
+    <p style="margin-left: 20px;">This is your dashboard.</p>
+
+    <!-- Currently Borrowed Books -->
+    <h3>Currently Borrowed Books</h3>
+    <div class="card-container">
+      <% currentIssuedBooks.forEach(book => { %>
+        <div class="card">
+          <%= book.book_title %>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- Low Stock Books -->
+    <h3>Low Stock Books</h3>
+    <div class="card-container">
+      <% lowStockBooks.forEach(book => { %>
+        <div class="card low-stock">
+          <%= book.book_title %>
+        </div>
+      <% }) %>
+    </div>
+
+    <!-- Logout Script Sync -->
+    <script>
+      window.addEventListener("storage", function (event) {
+        if (event.key === "logout") {
+          window.location.href = "/";
+        }
+      });
+    </script>
+  </body>
+</html>
